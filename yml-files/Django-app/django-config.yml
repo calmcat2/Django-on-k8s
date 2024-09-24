@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-cm
+  namespace: django-app
+data:
+  DB_PORT: "3306"
+  DB_HOST: "mysql-svc"
+  STATIC_ROOT: "/data/static"
+  DEBUG: "False"
+  ALLOWED_HOSTS: "localhost"
+  CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
