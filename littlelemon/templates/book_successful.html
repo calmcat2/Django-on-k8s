@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section>
+  <article>
+    <h1>Make a reservation</h1>
+    <!--Begin row-->
+    <div class="row">
+      <!--Begin col-->
+      <div class="column">
+          {% csrf_token %}
+          <form method="POST" id="form">
+            <!-- {% csrf_token %} -->
+            <p>
+              <label for="first_name">Name:</label>
+              <input type="text" placeholder="Your Name" maxlength="200" required="" id="first_name">
+            </p>
+            <p>
+              <!-- Step 9: Part one  -->
+              <label for="reservation_date">Reservation Date</label>
+              <input type="date" placeholder="YYYY-MM-DD"  required="" id="reservation_date">
+            </p>
+      
+            <p>
+              <label for="reservation_slot">Reservation time:</label>
+              <select id="reservation_slot">
+                <option value="0" disabled>Select time</option>
+              </select>
+            </p>
+            <button type="button" id="button">Reserve</button>
+          </form>
+      </div>
+      <!--End col-->
+      <div>
+      <h2>Your Reservation is booked Successfully!</h2>
+      <p>Name: {{form.Name}}</p>
+      <p>Reservation Date: {{form.reservation_date}}</p>
+      <p>Reservation Time: {{form.reservation_slot}}</p>
+      <p>No. of Guests: {{form.No_of_guests}}</p>
+      </div>
+
+    </div>
+
+
+
+
+
+  </article>
+</section>
+
+{% endblock %}
+

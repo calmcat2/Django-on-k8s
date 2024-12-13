@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section>
+  <article>
+    <h1>Make a Reservation</h1>
+    <!--Begin row-->
+    <div class="row">
+      <!--Begin col-->
+      <div class="column">
+          {% csrf_token %}
+          <form method="POST" id="form" action="{% url 'book' %}">
+            {% csrf_token %} 
+            <p>
+              <label for="First_name">Name:</label>
+              <input type="text" placeholder="Your Name" maxlength="200" required="" id="First_name">
+            </p>
+            <p>
+              <!-- Step 9: Part one  -->
+              <label for="Reservation_date">Reservation Date</label>
+              <input type="date" placeholder="YYYY-MM-DD" min="{{ today }}" required="" id="Reservation_date">
+            </p>
+      
+            <p>
+              <label for="Reservation_slot">Reservation time:</label>
+              <select id="Reservation_slot">
+                <option value="0" disabled>Select time</option>
+              </select>
+            </p>
+            <p>
+              <label for="No_of_guests">Number of Guests:</label>
+              <select id="No_of_guests" name="No_of_guests" required>
+                <!-- <option value="0" disabled selected>Select number of guests</option> -->
+                <option value="1">1</option>
+                <option value="2">2</option> 
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </p>
+            <p>
+              <label for="Phone">Phone Number:</label>
+              <input type="tel" placeholder="###-###-####" maxlength="15" required id="Phone" name="Phone">
+            </p>
+            <button type="button" id="button">Reserve</button>
+          </form>
+          <div id="success-message" style="display:none; color: green;">Booking is successful!</div>
+          <div id="error-message" style="color: red; display: none;"></div>
+      </div>
+  </article>
+</section>
+
+<script>
+
+  const date = new Date()
+  document.getElementById('Reservation_date').value = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate().toString().padStart(2, "0")}`
+
+  console.log(document.getElementById('Reservation_date').value);
+  getBookings();
+
+  /*  Step 10: Part two */
+  document.getElementById('Reservation_date').addEventListener('change',function(){getBookings()});
+  function getBookings() {
+    const date = document.getElementById('Reservation_date').value;
+
+    fetch("{% url 'bookings' %}" + '?date=' + date)
+        .then(response => response.json())
+        .then(data => {
+            // Extract reserved slots from the response data
+            let reserved_slots = data.map(item => item.Reservation_slot);
+
+            // Initialize slot options with a default "Select time" option
+            let slot_options = '<option value="0" disabled>Select time</option>';
+
+            // Loop through potential time slots (e.g., 10 AM to 8 PM)
+            for (let i = 10; i < 20; i++) {
+                const label = formatTime(i);
+                if (reserved_slots.includes(i)) {
+                    // If slot is reserved, disable it
+                    slot_options += `<option value=${i} disabled>${label}</option>`;
+                } else {
+                    // If slot is available, enable it
+                    slot_options += `<option value=${i}>${label}</option>`;
+                }
+            }
+
+            // Update the Reservation_slot dropdown with generated options
+            document.getElementById('Reservation_slot').innerHTML = slot_options;
+        })
+        .catch(error => console.error('Error fetching bookings:', error));
+}
+
+  function formatTime(time) {
+    const ampm = time < 12 ? 'AM' : 'PM'
+    const t = time < 12 ? time : time > 12 ? time - 12 : time
+    const label = `${t} ${ampm}`
+    return label
+  }
+
+  document.getElementById('button').addEventListener('click', function (e) {
+    var phoneNumber = document.getElementById('Phone').value;
+    var phoneRegex = /^(\d{3})-(\d{3})-(\d{4})$/;
+    if (!phoneRegex.test(phoneNumber)) {
+        alert('Please enter a valid phone number in form ###-###-####.');
+        return;
+    }
+    const formdata = {
+        First_name: document.getElementById('First_name').value,
+        Reservation_date: document.getElementById('Reservation_date').value,
+        Reservation_slot: document.getElementById('Reservation_slot').value,
+        No_of_guests: document.getElementById('No_of_guests').value,
+        Phone: document.getElementById('Phone').value,
+    };
+
+    fetch("{% url 'bookings' %}", { 
+        method: 'post', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formdata) 
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+            getBookings(); // Refresh the bookings list
+        } else {
+            const errorMessage = data.error || "Unknown error";
+            document.getElementById('error-message').innerHTML = "Booking failed: " + errorMessage;
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('error-message').innerHTML = "An unexpected error occurred.";
+        document.getElementById('error-message').style.display = 'block';
+        document.getElementById('success-message').style.display = 'none';
+    });
+})
+</script>
+{% endblock %}
+
