@@ -73,12 +73,6 @@ class SingleBookingView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
 def about(request):
     return render(request, 'about.html')
 
-# def reservations(request):
-#     date = request.GET.get('date',datetime.today().date())
-#     bookings = models.Booking.objects.all()
-#     booking_json = serializers.serialize('json', bookings)
-#     return render(request, 'bookings.html',{"bookings":booking_json})
-
 @csrf_exempt
 def book(request):
     form = BookingForm()
