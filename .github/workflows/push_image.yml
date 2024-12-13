@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ./littlelemon/**
+      - ./Dockerfile
+      - ./requirements.txt
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
