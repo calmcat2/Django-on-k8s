@@ -26,6 +26,8 @@ jobs:
   push_and_scan:
     runs-on: ubuntu-latest
     needs: sonarqube
+    permissions:
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,6 +54,7 @@ jobs:
           image-ref: 'docker.io/mhe5/django-k8s-custom-web:latest'
           format: 'sarif'
           output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
