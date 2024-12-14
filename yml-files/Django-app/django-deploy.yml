@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: django-deploy
   namespace: django-app
+  annotations:
+      keel.sh/policy: force
+      keel.sh/trigger: poll      
+      keel.sh/pollSchedule: "@every 10m"
 spec:
   replicas: 1
   selector:
