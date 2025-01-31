@@ -1,0 +1,38 @@
+namespace: django-app
+# Default values for django-app.
+replicaCount: 1
+
+# This sets the container image 
+image:
+  nginx:
+    repository: nginx
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  mysql:
+    repository: mysql
+    pullPolicy: IfNotPresent
+    tag: "8.3"
+  django:
+    repository: mhe5/django-k8s-custom-web
+    pullPolicy: IfNotPresent
+    tag: "latest"
+# name overrides
+nameOverride: ""
+fullnameOverride: ""
+
+# ingress
+ingress:
+  enabled: false
+
+# hostpath for volumes
+hostpath:
+  data: "/run/desktop/mnt/host/c/temp/k8s/db-data/"
+  staticfiles: "/run/desktop/mnt/host/c/temp/k8s/static"
+
+# service type and port
+service:
+  name: django-custom-web
+  type: NodePort
+  port: 80
+  nodePort: 30005
+

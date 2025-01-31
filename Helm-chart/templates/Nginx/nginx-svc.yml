@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Values.service.name }}"
+  namespace: "{{- .Values.namespace}}"
+  labels:
+    app: nginx-svc
+    {{- include "django-app.labels" . | nindent 4 }}
+spec:
+  type: "{{.Values.service.type}}"
+  ports:
+    - port: {{.Values.service.port}}
+      targetPort: 80
+      {{- if contains "NodePort" .Values.service.type }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    app: nginx

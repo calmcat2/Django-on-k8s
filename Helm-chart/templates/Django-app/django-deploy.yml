@@ -2,11 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-deploy
-  namespace: django-app
-  annotations:
-      keel.sh/policy: force
-      keel.sh/trigger: poll      
-      keel.sh/pollSchedule: "@every 10m"
+  namespace: "{{- .Values.namespace}}"
+  labels:
+    {{- include "django-app.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -16,6 +14,7 @@ spec:
     metadata:
       labels:
         app: django-app
+        {{- include "django-app.labels" . | nindent 8 }}
     spec:
       volumes:
         - name: staticfiles
@@ -26,7 +25,7 @@ spec:
           image: busybox:1.28
           command: ['sh', '-c', 'until nc -z mysql-svc 3306; do echo waiting for mysql; sleep 2; done;']
       containers:
-        - image: mhe5/django-k8s-custom-web:latest
+        - image: "{{.Values.image.django.repository}}:{{.Values.image.django.tag}}"
           imagePullPolicy: Always
           name: django-app-container
           envFrom:

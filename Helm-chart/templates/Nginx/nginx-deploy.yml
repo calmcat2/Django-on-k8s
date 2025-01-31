@@ -2,9 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deploy
-  namespace: django-app
+  namespace: "{{- .Values.namespace}}"
+  labels:
+    {{- include "django-app.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{.Values.replicaCount}}
   selector:
     matchLabels:
       app: nginx
@@ -12,6 +14,7 @@ spec:
     metadata:
       labels:
         app: nginx
+        {{- include "django-app.labels" . | nindent 8 }}
     spec:
       volumes:
       - name: nginx
@@ -22,7 +25,7 @@ spec:
           claimName: staticfiles-pvc
       containers:
       - name: nginx
-        image: nginx
+        image: "{{ .Values.image.nginx.repository }}:{{ .Values.image.nginx.tag }}"
         ports:
         - containerPort: 80
         volumeMounts:

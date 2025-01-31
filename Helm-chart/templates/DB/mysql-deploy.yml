@@ -2,7 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
-  namespace: django-app
+  namespace: "{{- .Values.namespace}}"
+  labels:
+    {{- include "django-app.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -11,6 +13,7 @@ spec:
     metadata:
       labels:
         app: mysql
+        {{- include "django-app.labels" . | nindent 8 }}
     spec:
       initContainers:
       - name: init-mysql
@@ -21,7 +24,7 @@ spec:
           mountPath: "/var/lib/mysql/"
       containers:
       - name: mysql
-        image: mysql:8.3
+        image: "{{.Values.image.mysql.repository}}:{{.Values.image.mysql.tag}}"
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

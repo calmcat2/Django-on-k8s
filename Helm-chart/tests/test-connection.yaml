@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ django-app.chart }}-test-connection"
+  namespace: "{{ .Values.namespace }}"
+  labels:
+    {{- include "django-app.labels" . | nindent 4 }}
+
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.service.name }}:{{ .Values.service.port }}']
+  restartPolicy: Never

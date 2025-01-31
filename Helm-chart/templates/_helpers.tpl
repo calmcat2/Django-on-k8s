@@ -1,0 +1,28 @@
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "django-app.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "django-app.labels" -}}
+helm.sh/chart: {{ include "django-app.chart" . }}
+{{ include "django-app.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "django-app.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "django-app.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+

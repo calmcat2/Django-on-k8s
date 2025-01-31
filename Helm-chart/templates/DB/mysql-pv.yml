@@ -2,9 +2,10 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: mysql-pv
-  namespace: django-app
+  namespace: "{{- .Values.namespace}}"
   labels:
     type: local
+    {{- include "django-app.labels" . | nindent 4 }}
 spec:
   storageClassName: manual
   capacity:
@@ -12,4 +13,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/run/desktop/mnt/host/c/temp/k8s/db-data/"
+    path: "{{ .Values.hostpath.data }}"
