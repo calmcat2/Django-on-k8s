@@ -1,4 +1,4 @@
-name: "Scan code, build image and push to docker hub"
+name: "Development pipeline"
 on:
   push:
     branches:
