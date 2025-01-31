@@ -9,67 +9,9 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
-class IsAdminOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        # Allow authenticated users to view
-        if request.method in permissions.SAFE_METHODS and request.user.is_authenticated:
-            return True
-        # Allow admin users full access
-        return request.user and request.user.is_staff
-    
-# Create your views here.
 def home(request):
     return render(request, 'index.html', {})
 
-class MenuItemsView(generics.ListCreateAPIView):
-    queryset = models.Menu.objects.all()
-    serializer_class = MenuSerializer
-    permission_classes = [IsAdminOrReadOnly]
-
-    def create(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied("Only admin users can create menu items.")
-        return super().create(request, *args, **kwargs)
-
-class SingleMenuItemView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
-    queryset=models.Menu.objects.all()
-    serializer_class=MenuSerializer
-    permission_classes = [IsAdminOrReadOnly]
-
-    def update(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied("Only admin users can update menu items.")
-        return super().update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied("Only admin users can delete menu items.")
-        return super().destroy(request, *args, **kwargs)
-
-class BookingView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated] 
-    queryset=models.Booking.objects.all()
-    def get_queryset(self):
-        if self.request.user.username!='admin':
-            print(self.request.user.username)
-            return models.Booking.objects.filter(First_name__iexact=self.request.user.username)
-        else:
-            return models.Booking.objects.all()
-
-    serializer_class = BookingSerializer
-
-class SingleBookingView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated] 
-    queryset=models.Booking.objects.all()
-    def get_queryset(self):
-        if self.request.user.username!='admin':
-            print(self.request.user.username)
-            return models.Booking.objects.filter(First_name__iexact=self.request.user.username)
-        else:
-            return models.Booking.objects.all()
-
-    serializer_class = BookingSerializer
-    
 def about(request):
     return render(request, 'about.html')
 
@@ -125,7 +67,6 @@ def bookings(request):
 
     return JsonResponse(booking_list, safe=False)
 
-# Add your code here to create new views
 def menu(request):
     menu_data = models.Menu.objects.all()
     main_data = {"menu": menu_data}
@@ -138,4 +79,63 @@ def menu_item(request, pk=None):
     else: 
         menu_item = "" 
     return render(request, 'menu_item.html', {"menu_item": menu_item}) 
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # Allow authenticated users to view
+        if request.method in permissions.SAFE_METHODS and request.user.is_authenticated:
+            return True
+        # Allow admin users full access
+        return request.user and request.user.is_staff
+
+class MenuItemsView(generics.ListCreateAPIView):
+    queryset = models.Menu.objects.all()
+    serializer_class = MenuSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied("Only admin users can create menu items.")
+        return super().create(request, *args, **kwargs)
+
+class SingleMenuItemView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
+    queryset=models.Menu.objects.all()
+    serializer_class=MenuSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied("Only admin users can update menu items.")
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            raise PermissionDenied("Only admin users can delete menu items.")
+        return super().destroy(request, *args, **kwargs)
+
+class BookingView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated] 
+    queryset=models.Booking.objects.all()
+    def get_queryset(self):
+        if self.request.user.username!='admin':
+            print(self.request.user.username)
+            return models.Booking.objects.filter(First_name__iexact=self.request.user.username)
+        else:
+            return models.Booking.objects.all()
+
+    serializer_class = BookingSerializer
+
+class SingleBookingView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated] 
+    queryset=models.Booking.objects.all()
+    def get_queryset(self):
+        if self.request.user.username!='admin':
+            print(self.request.user.username)
+            return models.Booking.objects.filter(First_name__iexact=self.request.user.username)
+        else:
+            return models.Booking.objects.all()
+
+    serializer_class = BookingSerializer
+
+
 

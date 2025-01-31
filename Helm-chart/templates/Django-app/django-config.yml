@@ -12,4 +12,4 @@ data:
   DEBUG: "False"
   ALLOWED_HOSTS: "localhost"
   CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
-  DJANGO_SECRET_KEY: 'django-insecure-v966rxdmv_phocaurd%))rr))!x%wvl6ms85+_f=$!^g(2n9o2'
+  DJANGO_SECRET_KEY: "{{ .Values.django.secretKey }}"
