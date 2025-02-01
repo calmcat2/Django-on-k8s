@@ -90,7 +90,7 @@ DATABASES = {
         'PASSWORD': os.getenv("MYSQL_PASSWORD"),   
         'HOST': os.getenv("DB_HOST"),   
         'PORT': os.getenv("DB_PORT"),   
-        'OPTIONS': json.loads(os.getenv("DB_OPTIONS",{}))  
+        'OPTIONS': os.getenv(json.loads("DB_OPTIONS"),{"init_command": "SET sql_mode='STRICT_TRANS_TABLES'"}) 
 
     }   
 } 
