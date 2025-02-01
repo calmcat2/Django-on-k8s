@@ -33,7 +33,7 @@ jobs:
       DB_OPTIONS : '{}'
     
     outputs:
-          chart-files-changed: ${{ steps.filters.outputs.chart-files-changed }}
+      chart-files-changed: ${{ steps.filters.outputs.chart-files-changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -63,7 +63,7 @@ jobs:
   # run only if some non-chart file was changed        
   build_image:
     needs: test
-    if: ${{ needs.test.outputs.chart-files-changed == 'true' }}
+    if: ${{ needs.test.outputs.chart-files-changed == 'false' }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -114,7 +114,7 @@ jobs:
   Update_Helm_chart:
     runs-on: ubuntu-latest
     needs: build_image
-    if: needs.push_and_scan.result == 'success' || needs.push_and_scan.result == 'skipped'
+    if: needs.build_image.result == 'success' || needs.build_image.result == 'skipped'
     steps:
       - name: Update Helm chart
         run: |
