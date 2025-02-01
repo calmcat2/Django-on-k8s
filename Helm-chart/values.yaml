@@ -4,6 +4,10 @@ replicaCount: 1
 
 # This sets the container image 
 image:
+  django:
+    repository: mhe5/django-k8s-custom-web
+    pullPolicy: IfNotPresent
+    tag: "latest"
   nginx:
     repository: nginx
     pullPolicy: IfNotPresent
@@ -12,10 +16,6 @@ image:
     repository: mysql
     pullPolicy: IfNotPresent
     tag: "8.3"
-  django:
-    repository: mhe5/django-k8s-custom-web
-    pullPolicy: IfNotPresent
-    tag: "latest"
 # name overrides
 nameOverride: ""
 fullnameOverride: ""

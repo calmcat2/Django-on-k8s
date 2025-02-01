@@ -129,20 +129,20 @@ jobs:
         run: |
           INCREMENT_TYPE=${{vars.INCREMENT_TYPE}}
           FILE="Helm-chart/Chart.yaml"
-          CURRENT_VERSION=$(grep oP "(?<=version:) \d\.\d.\d{1,3}" $FILE)
+          CURRENT_VERSION=$(grep -oP "(?<=version: )\d\.\d.\d{1,3}" $FILE)
           major=$(echo $CURRENT_VERSION | cut -d. -f1)
           minor=$(echo $CURRENT_VERSION | cut -d. -f2)
           patch=$(echo $CURRENT_VERSION | cut -d. -f3)
-          if ["INCREMENT_TYPE" == "major"]; then
-            major=$major+1
-          elif ["INCREMENT_TYPE" == "minor"]; then
-            minor=$minor+1
+          if [ "$INCREMENT_TYPE" = "major" ]; then
+            major=$((major+1))
+          elif [ "$INCREMENT_TYPE" = "minor" ]; then
+            minor=$((minor+1))
           else
-            patch=$patch+1
+            patch=$((patch+1))
           fi
           NEW_VERSION=$major.$minor.$patch
-          sed -i "s/version: $CURRENT_VERSION/version: $NEW_VERSION/" Helm-chart/values.yaml
-          sed -i "s/tag: .*/tag: ${{ github.RUN_NUMBER }}/" Helm-chart/values.yaml
+          sed -i "s/version: $CURRENT_VERSION/version: $NEW_VERSION/" Helm-chart/Chart.yaml
+          sed -i "0,/tag: .*/s//tag: ${{ github.RUN_NUMBER }}/" Helm-chart/values.yaml
           
       - name: Run the Action
         uses: devops-infra/action-commit-push@master
