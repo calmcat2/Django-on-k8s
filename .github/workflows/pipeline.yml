@@ -125,6 +125,8 @@ jobs:
     needs: build_image
     if: always() && (needs.build_image.result == 'success' || needs.build_image.result == 'skipped')
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Update version in Helm chart
         run: |
           INCREMENT_TYPE=${{vars.INCREMENT_TYPE}}
