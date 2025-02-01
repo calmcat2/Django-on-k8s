@@ -89,7 +89,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
           push: false
           load: true
           tags: mhe5/django-k8s-custom-web:${{ github.RUN_NUMBER }}
