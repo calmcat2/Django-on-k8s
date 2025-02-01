@@ -108,8 +108,14 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Push to Docker Hub
-        run: docker push mhe5/django-k8s-custom-web:${{ github.RUN_NUMBER }}
+      - name: Push image to Docker Hub
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: mhe5/django-k8s-custom-web:${{ github.RUN_NUMBER }}
   
   Update_Helm_chart:
     runs-on: ubuntu-latest
