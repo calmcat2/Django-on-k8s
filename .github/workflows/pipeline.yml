@@ -33,7 +33,7 @@ jobs:
       DB_OPTIONS : '{}'
     
     outputs:
-      chart-files-changed: ${{ steps.filters.outputs.chart-files-changed }}
+      chart-files-changed: ${{ steps.filters.outputs.image-files-changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -43,6 +43,10 @@ jobs:
             chart-files-changed:
               - 'Helm-chart/**'
             app-files-changed:
+              - 'littlelemon/**'
+            image-files-changed:
+              - 'Dockerfile'
+              - 'requirements.txt'
               - 'littlelemon/**'
 
       - name: install python
@@ -63,7 +67,7 @@ jobs:
   # run only if some non-chart file was changed        
   build_image:
     needs: test
-    if: ${{ needs.test.outputs.chart-files-changed == 'false' }}
+    if: ${{ needs.test.outputs.image-chart-files-changed == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
