@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "django-app.labels" . | nindent 4 }}
 data:
+  DB_ENGINE: "django.db.backends.mysql"
   DB_PORT: "3306"
   DB_HOST: "mysql-svc"
   STATIC_ROOT: "/data/static"
@@ -13,3 +14,5 @@ data:
   ALLOWED_HOSTS: "localhost"
   CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
   DJANGO_SECRET_KEY: "{{ .Values.django.secretKey }}"
+  DB_OPTIONS: {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'" }
+  

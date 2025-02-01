@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os,json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,15 +84,14 @@ WSGI_APPLICATION = 'littlelemon.wsgi.application'
 
 DATABASES = {   
     'default': {   
-        'ENGINE': 'django.db.backends.mysql',   
+        'ENGINE': os.getenv("DB_ENGINE"),   
         'NAME': os.getenv("MYSQL_DATABASE"),   
         'USER': os.getenv("MYSQL_USER"),   
         'PASSWORD': os.getenv("MYSQL_PASSWORD"),   
         'HOST': os.getenv("DB_HOST"),   
         'PORT': os.getenv("DB_PORT"),   
-        'OPTIONS': {   
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"   
-        }   
+        'OPTIONS': json.loads(os.getenv("DB_OPTIONS",{}))  
+
     }   
 } 
 # Password validation

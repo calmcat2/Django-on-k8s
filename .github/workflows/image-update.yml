@@ -16,12 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DB_PORT : "3306"
-      DB_HOST : "mysql-svc"
+      DB_HOST : "127.0.0.1"
       STATIC_ROOT : "/data/static"
       DEBUG : "False"
       ALLOWED_HOSTS : "localhost"
       CSRF_TRUSTED_ORIGINS : "http://localhost:30005"
       DJANGO_SECRET_KEY : 'django-insecure'
+      DB_ENGINE : 'django.db.backends.sqlite3'
+      MYSQL_DATABASE: 'littlelemon'
+      MYSQL_USER : "littlelemon" 
+      MYSQL_PASSWORD : "littlelemon@123"   
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -29,9 +34,11 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
+          suro apt-get update
+          sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - run: python littlelemon/manage.py test
+      - run: python3 littlelemon/manage.py test restaurant.tests
           
   push_and_scan:
     runs-on: ubuntu-latest
