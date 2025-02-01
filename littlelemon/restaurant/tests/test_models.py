@@ -10,8 +10,8 @@ class MenuTest(TestCase):
     def test_menu(self):
         item1=Menu.objects.get(Title="Banana")
         item2=Menu.objects.get(Title="Drunken Noodles")
-        self.assertEqual(str(item1),"Banana: 1")
-        self.assertEqual(str(item2),"Drunken Noodles: 10")
+        self.assertEqual(str(item1),"Banana: 1.00")
+        self.assertEqual(str(item2),"Drunken Noodles: 10.00")
 
 class BookingTest(TestCase):       
     def setUp(self):
