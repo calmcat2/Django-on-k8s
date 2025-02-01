@@ -67,7 +67,7 @@ jobs:
   # run only if some non-chart file was changed        
   build_image:
     needs: test
-    if: ${{ needs.test.outputs.image-chart-files-changed == 'true' }}
+    if: ${{ needs.test.outputs.image-files-changed == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
