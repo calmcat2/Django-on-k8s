@@ -24,8 +24,9 @@ jobs:
       DJANGO_SECRET_KEY : 'django-insecure'
       DB_ENGINE : 'django.db.backends.sqlite3'
       MYSQL_DATABASE: 'littlelemon'
-      MYSQL_USER : "littlelemon" 
-      MYSQL_PASSWORD : "littlelemon@123"   
+      MYSQL_USER : 'littlelemon' 
+      MYSQL_PASSWORD : 'littlelemon@123'   
+      DB_OPTIONS : ''
 
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +39,9 @@ jobs:
           sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - run: python3 littlelemon/manage.py test restaurant.tests
+          python3 littlelemon/manage.py makemigrations
+          python3 littlelemon/manage.py migrate
+          python3 littlelemon/manage.py test restaurant.tests
           
   push_and_scan:
     runs-on: ubuntu-latest
