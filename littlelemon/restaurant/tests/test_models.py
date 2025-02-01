@@ -8,11 +8,11 @@ class MenuTest(TestCase):
         Menu.objects.create(MenuID=4,Title="Drunken Noodles",Price=10,Inventory=1).save()
         
     def test_menu(self):
-        item1=Menu.objects.get(title="Banana")
-        item2=Menu.objects.get(title="Drunken Noodles")
+        item1=Menu.objects.get(Title="Banana")
+        item2=Menu.objects.get(Title="Drunken Noodles")
         self.assertEqual(str(item1),"Banana: 1")
         self.assertEqual(str(item2),"Drunken Noodles: 10")
-        
+
 class BookingTest(TestCase):       
     def setUp(self):
         Booking.objects.create(
