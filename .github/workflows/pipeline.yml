@@ -67,7 +67,8 @@ jobs:
   # run only if some non-chart file was changed        
   build_image:
     needs: test
-    if: always() && needs.test.outputs.image-files-changed == 'true' 
+    # temporarily disabled
+    if: needs.test.outputs.image-files-changed == 'true' 
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -107,7 +108,6 @@ jobs:
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -125,11 +125,13 @@ jobs:
     needs: build_image
     if: always() && (needs.build_image.result == 'success' || needs.build_image.result == 'skipped')
     steps:
-      - name: Update Helm chart
+      - name: Update version in Helm chart
         run: |
           INCREMENT_TYPE=${{vars.INCREMENT_TYPE}}
+          ls -la
           FILE="Helm-chart/Chart.yaml"
-          CURRENT_VERSION=$(grep -oP "(?<=version: )\d\.\d.\d{1,3}" $FILE)
+          CURRENT_VERSION=$(grep -oP "(?<=version: )\d{1,3}\.\d{1,3}.\d{1,3}" $FILE)
+          echo "Current version: $CURRENT_VERSION"
           major=$(echo $CURRENT_VERSION | cut -d. -f1)
           minor=$(echo $CURRENT_VERSION | cut -d. -f2)
           patch=$(echo $CURRENT_VERSION | cut -d. -f3)
@@ -142,6 +144,10 @@ jobs:
           fi
           NEW_VERSION=$major.$minor.$patch
           sed -i "s/version: $CURRENT_VERSION/version: $NEW_VERSION/" Helm-chart/Chart.yaml
+      
+      - name: Update image version in Helm chart
+        if: needs.build_image.result == 'success'
+        run: |
           sed -i "0,/tag: .*/s//tag: ${{ github.RUN_NUMBER }}/" Helm-chart/values.yaml
           
       - name: Run the Action
