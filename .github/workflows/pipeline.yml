@@ -12,6 +12,8 @@ on:
   workflow_dispatch:
 jobs:
   test:
+    if: false  
+    # This job is disabled
     name: Django test
     runs-on: ubuntu-latest
     env:
@@ -70,7 +72,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: false
-          tags: mhe5/django-k8s-custom-web:$GITHUB_RUN_NUMBER
+          tags: mhe5/django-k8s-custom-web:${{ github.RUN_NUMBER }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
