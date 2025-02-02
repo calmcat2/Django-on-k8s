@@ -14,5 +14,6 @@ data:
   ALLOWED_HOSTS: "localhost"
   CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
   DJANGO_SECRET_KEY: "{{- .Values.django.secretKey -}}"
+
   
   

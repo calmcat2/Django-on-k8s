@@ -155,10 +155,7 @@ jobs:
           sed -i "0,/tag: .*/s//tag: ${{ github.RUN_NUMBER }}/" Helm-chart/values.yaml
           
       - name: Commit and push changes to repo
-        uses: devops-infra/action-commit-push@master
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-          add_timestamp: true
-          commit_message: "Helm chart version updated by GitHub Actions"
-          force: false
-          target_branch: main
+          commit_message: "Helm chart version/image tag updated by GitHub Actions"
+          commit_user_name: "GitHub Actions"
