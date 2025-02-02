@@ -1,18 +1,15 @@
 # Django on Kubernetes
 
 This is the Kubernetes version of the Django restaurant system developed based on repository [here](https://github.com/calmcat2/littlelemon/).
-A github Actions is set to analyze code using SonarQube, then create and push the image to docker hub.
+A GitHub Actions workflow is configured to test the code, build the Docker image, and push it to Docker Hub. The Helm chart is then updated in place, triggering ArgoCD to synchronize the application in the Kubernetes cluster.
 
 Before applying the YAML files, ensure the following are updated:
 
-1. **Django Configuration**:
-   - You may need to modify `yml-files/Django-app/django-config.yml` for Django setttings customization. Look up for references in `littlelemon/littlelemon/settings.py`.
+1. **Configuration**:
+   - You may need to modify `Helm-chart/templates/values.yml` for any customization. 
 
 2. **Persistent Volume Configuration**:
    - Modify `yml-files/Django-app/staticfiles-pv.yml` and `yml-files/DB/mysql-pv.yml` as necessary to suit your storage requirements.
-
-3. **MySQL Credentials**:
-   - Update your credentials for the MySQL server in `mysql-secret.yml` as necessary.
 
 ## LittleLemon Restaurant Website
 

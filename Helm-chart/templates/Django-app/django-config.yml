@@ -6,14 +6,14 @@ metadata:
   labels:
     {{- include "django-app.labels" . | nindent 4 }}
 data:
-  DB_ENGINE: "django.db.backends.mysql"
-  DB_PORT: "3306"
-  DB_HOST: "mysql-svc"
-  STATIC_ROOT: "/data/static"
-  DEBUG: "False"
-  ALLOWED_HOSTS: "localhost"
-  CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
+  DB_ENGINE: "{{- .Values.django.DB_ENGINE -}}"
+  DB_PORT: "{{- .Values.django.DB_PORT -}}"
+  DB_HOST: "{{- .Values.django.DB_HOST -}}"
+  STATIC_ROOT: "{{- .Values.django.STATIC_ROOT -}}"
+  DEBUG: "{{- .Values.django.DEBUG -}}"
+  ALLOWED_HOSTS: "{{- .Values.django.ALLOWED_HOSTS -}}"
+  CSRF_TRUSTED_ORIGINS: "{{- .Values.django.CSRF_TRUSTED_ORIGINS -}}"
   DJANGO_SECRET_KEY: "{{- .Values.django.secretKey -}}"
 
-  
+
   

@@ -39,4 +39,18 @@ service:
 # Django app settings
 django:
   secretKey: "django-insecure-v966rxdmv_phocaurd%))rr))!x%wvl6ms85+_f=$!^g(2n9o2"
+  DB_ENGINE: "django.db.backends.mysql"
+  DB_PORT: "3306"
+  DB_HOST: "mysql-svc"
+  STATIC_ROOT: "/data/static"
+  DEBUG: "False"
+  ALLOWED_HOSTS: "localhost"
+  CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
+
+# DB secrets
+mysql:
+  MYSQL_ROOT_PASSWORD: ZGF0YWJhc2U0TWU=
+  MYSQL_DATABASE: bGl0dGxlbGVtb24=
+  MYSQL_USER: YWRtaW4=
+  MYSQL_PASSWORD: ZW1wbG95ZWVAMTIz
 
