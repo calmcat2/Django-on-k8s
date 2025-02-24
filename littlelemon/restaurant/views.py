@@ -8,17 +8,28 @@ from .forms import BookingForm
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
+from .metrics import increment_request_count
+from .metrics import request_count,increment_request_count,error_count,MetricsMixin
+from prometheus_client import generate_latest
+
+
+# Endpoint for metrics scrape '/metrics'
+def metrics_view(request):
+    return HttpResponse(generate_latest(), content_type='text/plain')
 
 # Home page view
 def home(request):
+    increment_request_count('GET','/')
     return render(request, 'index.html', {})
 # About page view
 def about(request):
+    increment_request_count('GET','/about/')
     return render(request, 'about.html')
 # Booking page view
 @csrf_exempt
 def book(request):
+    increment_request_count('POST','/book/')
     form = BookingForm()
     today = datetime.date.today().strftime('%Y-%m-%d')
     context = {'form': form, 'today': today}
@@ -44,33 +55,21 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             return True
         # Allow admin users full access
         return request.user and request.user.is_staff
-# Menu API view
-class MenuItemsView(generics.ListCreateAPIView):
+
+# API endpoint 'api/menu/' to list and create menu items by staff
+class MenuItemsView(MetricsMixin, generics.ListCreateAPIView):
     queryset = models.Menu.objects.all()
     serializer_class = MenuSerializer
     permission_classes = [IsAdminOrReadOnly]
 
-    def create(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied("Only admin users can create menu items.")
-        return super().create(request, *args, **kwargs)
-# Single menu item API view
-class SingleMenuItemView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
+# API endpoint 'api/menu-items/<int:pk>' to view, update and delete menu items by staff# Single menu item API view
+class SingleMenuItemView(MetricsMixin,generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
     queryset=models.Menu.objects.all()
     serializer_class=MenuSerializer
     permission_classes = [IsAdminOrReadOnly]
 
-    def update(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied("Only admin users can update menu items.")
-        return super().update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            raise PermissionDenied("Only admin users can delete menu items.")
-        return super().destroy(request, *args, **kwargs)
-# Booking API view, allows list and create (admin only)
-class BookingView(generics.ListCreateAPIView):
+# API endpoint 'api/reservations/' to list and create bookings by authenticated users. Admin can view all bookings.
+class BookingView(MetricsMixin,generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated] 
     queryset=models.Booking.objects.all()
     def get_queryset(self):
@@ -82,7 +81,8 @@ class BookingView(generics.ListCreateAPIView):
 
     serializer_class = BookingSerializer
 # Single booking API view, allows retrieve, update and delete (user only)
-class SingleBookingView(generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
+# API endpoint 'api/reservations/<int:pk>' to view, update and delete bookings by authenticated users. Admin can view/edit/delete all bookings.
+class SingleBookingView(MetricsMixin,generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated] 
     queryset=models.Booking.objects.all()
     def get_queryset(self):

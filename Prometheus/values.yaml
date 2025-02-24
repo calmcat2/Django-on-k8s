@@ -1,0 +1,14 @@
+server:
+  persistentVolume:
+    size: 2Gi
+  service:
+    servicePort: 80
+    type: NodePort
+    nodePort: 30008
+alertmanager:
+  persistentVolume:
+    size: 1Gi
+
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false
