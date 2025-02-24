@@ -15,9 +15,16 @@ data:
         alias /data/static/;
       }
 
+      location /metrics {
+        deny all;
+        access_log off;
+        error_log off;
+      }
+
       location / {
-        proxy_pass http://django-svc:8000; # Point to your Django application's host and port
+        proxy_pass http://django-svc:8000; 
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
       }
+
     }
