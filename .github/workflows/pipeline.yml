@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - monitor
     paths:
       - 'littlelemon/**'
       - 'Dockerfile'
