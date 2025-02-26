@@ -15,10 +15,9 @@ data:
         alias /data/static/;
       }
 
-      location /metrics {
+      location /metrics/ {
         deny all;
-        access_log off;
-        error_log off;
+        return 403;
       }
 
       location / {

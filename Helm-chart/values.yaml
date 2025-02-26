@@ -31,7 +31,7 @@ hostpath:
 
 # service type and port
 service:
-  name: django-custom-web
+  name: django-web-service
   type: NodePort
   port: 80
   nodePort: 30005
@@ -44,7 +44,7 @@ django:
   DB_HOST: "mysql-svc"
   STATIC_ROOT: "/data/static"
   DEBUG: "False"
-  ALLOWED_HOSTS: "localhost"
+  ALLOWED_HOSTS: "localhost,django-svc.django-app.svc.cluster.local"
   CSRF_TRUSTED_ORIGINS: "http://localhost:30005"
 
 # DB secrets

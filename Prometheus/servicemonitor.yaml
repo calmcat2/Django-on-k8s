@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    release: prometheus
+  name: django-servicemonitor
+  namespace: prometheus
+spec:
+  endpoints:
+  - interval: 30s
+    targetPort: 8000
+    path: /metrics
+    relabelings:
+    # Replace __address__ with service DNS name
+    - sourceLabels: [__meta_kubernetes_service_name]
+      regex: django-svc
+      targetLabel: __address__
+      action: replace
+      replacement: django-svc.django-app.svc.cluster.local:8000
+  namespaceSelector:
+    matchNames:
+    - django-app
+  selector:
+    matchLabels:
+      app: app-svc
+  
