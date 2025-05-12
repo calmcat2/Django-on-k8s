@@ -24,9 +24,29 @@ fullnameOverride: ""
 ingress:
   enabled: false
 
+# Storage class
+storageClassName: 
+  database: "manual"
+  staticfiles: "manual"
+
+# Persistent volume reclaim policy
+reclaimPolicy:
+  database: "Retain"
+  staticfiles: "Retain"
+
+# persistent volume size
+storageSize:
+  database: "500M"
+  staticfiles: "500M"
+
+# access modes
+accessMode:
+  database: "ReadWriteOnce"
+  staticfiles: "ReadWriteMany"
+
 # hostpath for volumes
 hostpath:
-  data: "/run/desktop/mnt/host/c/temp/k8s/db-data/"
+  database: "/run/desktop/mnt/host/c/temp/k8s/db-data/"
   staticfiles: "/run/desktop/mnt/host/c/temp/k8s/static"
 
 # service type and port

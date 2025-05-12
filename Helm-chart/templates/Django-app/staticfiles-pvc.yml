@@ -6,10 +6,10 @@ metadata:
   labels:
     {{- include "django-app.labels" . | nindent 4 }}
 spec:
-  storageClassName: manual
+  storageClassName: "{{ .Values.storageClassName.staticfiles }}"
   accessModes:
-    - ReadWriteMany
+    - "{{ .Values.accessMode.staticfiles }}"
   resources:
     requests:
-      storage: 500M
+      storage: "{{ .Values.storageSize.staticfiles }}"
   volumeName: staticfiles-pv
