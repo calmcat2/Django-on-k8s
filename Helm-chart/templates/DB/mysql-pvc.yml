@@ -7,10 +7,10 @@ metadata:
     {{- include "django-app.labels" . | nindent 4 }}
 spec:
   
-  storageClassName: manual
+  storageClassName: "{{ .Values.storageClassName.database }}"
   accessModes:
-    - ReadWriteOnce
+    - "{{ .Values.accessMode.database }}"
   resources:
     requests:
-      storage: 500M
+      storage: "{{ .Values.storageSize.database }}"
   volumeName: mysql-pv

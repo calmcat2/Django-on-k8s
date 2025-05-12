@@ -8,10 +8,11 @@ metadata:
     app: django-staticfiles
     {{- include "django-app.labels" . | nindent 4 }}
 spec:
-  storageClassName: manual
+  storageClassName: "{{ .Values.storageClassName.staticfiles }}"
+  persistentVolumeReclaimPolicy: "{{ .Values.reclaimPolicy.staticfiles }}"
   capacity:
-    storage: 500M
+    storage: "{{ .Values.storageSize.staticfiles }}"
   accessModes:
-    - ReadWriteMany
+    - "{{ .Values.accessMode.staticfiles }}"
   hostPath:
     path: "{{ .Values.hostpath.staticfiles }}"
