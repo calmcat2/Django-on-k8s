@@ -7,7 +7,7 @@ image:
   django:
     repository: mhe5/django-k8s-custom-web
     pullPolicy: IfNotPresent
-    tag: 29
+    tag: 31
   nginx:
     repository: nginx
     pullPolicy: IfNotPresent
