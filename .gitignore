@@ -1,9 +1,12 @@
 ignore/**
 
-# Python
-__pycache__/
+# Python & venv
+**/__pycache__/
 *.py[cod]
 *$py.class
+pyproject.toml
+.python-version
+uv.lock
 
 # Django
 *.log
@@ -11,7 +14,6 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
-staticfiles/
 
 # Environments
 .env

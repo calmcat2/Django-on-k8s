@@ -69,7 +69,7 @@
   function getBookings() {
     const date = document.getElementById('Reservation_date').value;
 
-    fetch("{% url 'bookings' %}" + '?date=' + date)
+    fetch("{% url 'api/reservations-slot' %}" + '?date=' + date)
         .then(response => response.json())
         .then(data => {
             // Extract reserved slots from the response data
@@ -118,7 +118,7 @@
         Phone: document.getElementById('Phone').value,
     };
 
-    fetch("{% url 'bookings' %}", { 
+    fetch("{% url 'api/reservations-slot' %}", { 
         method: 'post', 
         headers: {
             'Content-Type': 'application/json'
