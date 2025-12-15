@@ -16,6 +16,6 @@ urlpatterns = [
     path('api-token-auth', obtain_auth_token),
     path('auth', include('djoser.urls')),
     path('auth', include('djoser.urls.authtoken')),
-    path('metrics/', views.metrics_view),
+    path('metrics', views.metrics_view),
  
 ]
