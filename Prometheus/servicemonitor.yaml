@@ -4,7 +4,7 @@ metadata:
   labels:
     release: prometheus
   name: django-servicemonitor
-  namespace: prometheus
+  namespace: monitoring
 spec:
   endpoints:
   - interval: 30s

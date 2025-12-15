@@ -1,4 +1,4 @@
-server:
+prometheus:
   persistentVolume:
     size: 2Gi
   service:
@@ -9,6 +9,7 @@ alertmanager:
   persistentVolume:
     size: 1Gi
 
-prometheus-node-exporter:
-  hostRootFsMount:
-    enabled: false
+grafana:
+  service:
+    type: NodePort  
+    port: 30009
