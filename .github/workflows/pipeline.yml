@@ -12,6 +12,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
+
 jobs:
   # detect which files have changes. If any file in the Helm-chart directory has changed, the chart-files-changed output will be set to true.
   # If any file in the Django-app directory has changed, Django tests will be run.
@@ -33,41 +34,44 @@ jobs:
       DB_OPTIONS : '{}'
     
     outputs:
-      image-files-changed: ${{ steps.filters.outputs.image-files-changed }}
+      image-needs-update: ${{ steps.filters.outputs.image-needs-update }}
+      helm-needs-update: ${{ steps.filters.outputs.helm-needs-update }}
+      
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filters
         with:
           filters: |
-            chart-files-changed:
+            helm-needs-update:
               - 'Helm-chart/**'
-            app-files-changed:
+              - 'Dockerfile'
+              - 'requirements.txt'
               - 'littlelemon/**'
-            image-files-changed:
+            image-needs-update:
               - 'Dockerfile'
               - 'requirements.txt'
               - 'littlelemon/**'
 
-      - name: install python
-        if: steps.filters.outputs.app-files-changed == 'true'
-        uses: actions/setup-python@v5
+      - name: Setup Python
+        if: steps.filters.outputs.image-needs-update == 'true'
+        uses: actions/setup-python@v6.1.0
         with:
-          python-version: '3.11'
-
-      - if: steps.filters.outputs.app-files-changed == 'true'
-        name: Install dependencies &  run tests
+          python-version: '3.11.11'
+      - name: Install system dependencies
+        if: steps.filters.outputs.image-needs-update == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          python3 littlelemon/manage.py test restaurant.tests
+      - name: Run Django tests on Restaurant app
+        if: steps.filters.outputs.image-needs-update == 'true'
+        run: python3 littlelemon/manage.py test restaurant.tests
 
   # run only if some non-chart file was changed        
   build_image:
     needs: test
-    if: needs.test.outputs.image-files-changed == 'true' 
+    if: needs.test.outputs.image-needs-update == 'true' 
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -120,10 +124,10 @@ jobs:
   
   Update_Helm_chart:
     runs-on: ubuntu-latest
-    needs: build_image
+    needs: [build_image,test]
     permissions:
       contents: write
-    if: always() && (needs.build_image.result == 'success' || needs.build_image.result == 'skipped')
+    if: needs.test.outputs.helm-needs-update == 'true' && (needs.test.result == 'success' && (needs.build_image.result == 'success' || needs.build_image.result == 'skipped')) 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -143,7 +147,7 @@ jobs:
           else
             patch=$((patch+1))
           fi
-          NEW_VERSION=$major.$minor.$patch
+          NEW_VERSION=${major}.${minor}.${patch}
           echo "New version: $NEW_VERSION"
           echo "Updating app version in the Chart.yaml"
           sed -i "s/version: $CURRENT_VERSION/version: $NEW_VERSION/" Helm-chart/Chart.yaml
