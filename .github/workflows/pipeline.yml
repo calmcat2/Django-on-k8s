@@ -2,8 +2,7 @@ name: "Development pipeline"
 on:
   push:
     branches:
-      - main
-      - monitor
+      - monitoring
     paths:
       - 'littlelemon/**'
       - 'Dockerfile'
