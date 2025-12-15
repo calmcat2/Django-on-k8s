@@ -71,7 +71,7 @@ jobs:
   # run only if some non-chart file was changed        
   build_image:
     needs: test
-    if: needs.test.outputs.image-needs-update == 'true' 
+    if: ${{ needs.test.outputs.image-needs-update == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -127,7 +127,7 @@ jobs:
     needs: [build_image,test]
     permissions:
       contents: write
-    if: needs.test.outputs.helm-needs-update == 'true' && (needs.test.result == 'success' && (needs.build_image.result == 'success' || needs.build_image.result == 'skipped')) 
+    if: ${{ !failure() && !cancelled() && needs.test.outputs.helm-needs-update == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
