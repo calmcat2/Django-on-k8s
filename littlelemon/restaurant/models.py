@@ -1,8 +1,9 @@
 from django.db import models
 import datetime
+from django_prometheus.models import ExportModelOperationsMixin
 
 
-class Booking(models.Model):
+class Booking(ExportModelOperationsMixin('booking'), models.Model):
     First_name = models.CharField(max_length=200)
     Reservation_date = models.DateField()
     Reservation_slot = models.SmallIntegerField(default=10)
@@ -15,7 +16,7 @@ class Booking(models.Model):
     def __str__(self): 
         return f'{self.First_name}:{str(self.BookingDate)}'
 
-class Menu(models.Model):
+class Menu(ExportModelOperationsMixin('menu'), models.Model):
     MenuID=models.IntegerField(unique=True)
     Title=models.CharField(max_length=255,unique=True)
     Price=models.DecimalField(max_digits=6,decimal_places=2)

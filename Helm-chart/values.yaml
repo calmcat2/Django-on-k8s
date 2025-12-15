@@ -59,7 +59,7 @@ service:
 # Django app settings
 django:
   secretKey: "django-insecure-v966rxdmv_phocaurd%))rr))!x%wvl6ms85+_f=$!^g(2n9o2"
-  DB_ENGINE: "django.db.backends.mysql"
+  DB_ENGINE: "django_prometheus.db.backends.mysql"
   DB_PORT: "3306"
   DB_HOST: "mysql-svc"
   STATIC_ROOT: "/data/static"
