@@ -81,7 +81,6 @@ class BookingView(MetricsMixin,generics.ListCreateAPIView):
 
     serializer_class = BookingSerializer
 # Single booking API view, allows retrieve, update and delete (user only)
-# API endpoint 'api/reservations/<int:pk>' to view, update and delete bookings by authenticated users. Admin can view/edit/delete all bookings.
 class SingleBookingView(MetricsMixin,generics.RetrieveUpdateAPIView,generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated] 
     queryset=models.Booking.objects.all()

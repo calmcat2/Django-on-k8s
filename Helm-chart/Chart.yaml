@@ -1,6 +1,6 @@
 apiVersion: v2
-name: django-app
-description: A Django web app with MySQL database on local Kubernetes cluster
+name: django-app-monitoring
+description: A Django web app with MySQL database on local Kubernetes cluster compatible with prometheus 
 type: application
-version: 0.1.12
+version: 0.1.1
 appVersion: "1.0.0"
